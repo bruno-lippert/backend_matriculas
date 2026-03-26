@@ -12,19 +12,17 @@ module.exports = {
     const { name, email, password, role } = req.body;
 
     if (!name || !email || !password || !role) {
-      return res.status(401).json({ message: "All fields are required" });
+      throw new HttpError(401, "All fields are required");
     }
 
     const allowedRoles = new Set(["admin", "aluno"]);
     if (!allowedRoles.has(role)) {
-      return res
-        .status(401)
-        .json({ message: "Role must be 'admin' or 'aluno'" });
+      throw new HttpError(401, "Role must be 'admin' or 'aluno'");
     }
 
     const userAlreadyExists = users.findByEmail(email);
     if (userAlreadyExists) {
-      return res.status(400).json({ message: "User already exists" });
+      throw new HttpError(400, "User already exists");
     }
 
     const user = users.createByAdmin({ name, email, password, role });

@@ -17,6 +17,14 @@ app.use(express.json());
 
 app.use(router);
 
+app.use((err, _, res, next) => {
+  const status = err.status || 500;
+  const message = err.message || "Erro interno do backend";
+
+  res.status(status).json({ message });
+  next();
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
